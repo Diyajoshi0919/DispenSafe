@@ -1,0 +1,12 @@
+﻿__pycache__/
+*.pyc
+.env
+venv/
+.venv/
+*.db
+*.db-shm
+*.db-wal
+server/uploads/
+print_agent/spool/
+bill_*.txt
+.vscode/
