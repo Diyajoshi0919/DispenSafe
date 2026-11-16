@@ -1,37 +1,171 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OPD dashboard | Campus Dispensary</title>
-  <link rel="icon" href="/static/shared/img/nitj-logo.png">
+  <link rel="icon" href="../shared/img/nitj-logo.png">
+
+  <!-- If the dispensary network has no internet, the fallback fonts in style.css are used. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/shared/style.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="../shared/style.css">
+  <link rel="stylesheet" href="../shared/dashboard.css">
 </head>
-<body>
-  <header class="appbar">
-    <div class="wrap">
-      <a class="appbar-brand" href="/">
-        <img src="/static/shared/img/nitj-logo.png" alt="" width="46" height="49">
-        <span><span class="appbar-title">Campus Dispensary</span><br><span class="appbar-sub">OPD dashboard</span></span>
-      </a>
-      <div class="appbar-right">
-        <span class="appbar-user" data-user-name></span>
-        <button class="btn btn-appbar" type="button" data-logout>Log out</button>
+
+<body class="dash" data-role="opd">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="app-header">
+    <div class="brand">
+      <img src="../shared/img/nitj-logo.png" alt="" width="46" height="46">
+      <div>
+        <div class="brand-title">Campus Dispensary</div>
+        <div class="brand-sub">OPD dashboard</div>
       </div>
+    </div>
+    <div class="header-right">
+      <span class="live" data-bind="live-status" data-state="off">Connecting</span>
+      <span class="staff-name" data-bind="staff-name"></span>
+      <button class="btn-ghost-light" type="button" data-action="logout">Log out</button>
     </div>
   </header>
 
-  <main class="wrap" style="padding-top: 40px; padding-bottom: 60px">
-    <div class="card">
-      <h1 class="h-section">OPD dashboard</h1>
-      <p>You are logged in. This dashboard is built in the next phase.</p>
-    </div>
+  <nav class="tabs" role="tablist" aria-label="OPD sections">
+    <button class="tab" role="tab" type="button" data-tab="pending" aria-selected="true">Pending bills</button>
+    <button class="tab" role="tab" type="button" data-tab="history" aria-selected="false">History</button>
+    <button class="tab" role="tab" type="button" data-tab="prescriptions" aria-selected="false">Prescriptions</button>
+    <button class="tab" role="tab" type="button" data-tab="search" aria-selected="false">Search student</button>
+  </nav>
+
+  <main id="main" class="dash-main">
+    <div class="banner-error" data-bind="error" role="alert" hidden></div>
+
+    <!-- Pending bills (live) -->
+    <section class="panel" data-panel="pending" aria-label="Pending bills">
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Waiting for review</div>
+          <div class="stat-value" data-tone="wait" data-bind="stat-waiting"></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Approved today</div>
+          <div class="stat-value" data-tone="ok" data-bind="stat-approved"></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Rejected today</div>
+          <div class="stat-value" data-tone="bad" data-bind="stat-rejected"></div>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <aside>
+          <div class="list-head">
+            <h2 class="section-title">Today's bills</h2>
+            <span class="muted">Newest first</span>
+          </div>
+          <ul class="bill-list" id="bill-list"></ul>
+        </aside>
+
+        <article class="detail" aria-live="polite">
+          <p class="empty" id="detail-empty">Select a bill to review it.</p>
+
+          <div id="detail-body" hidden>
+            <div class="detail-head">
+              <div>
+                <h2 class="detail-roll" data-bind="roll_no"></h2>
+                <p class="detail-name">
+                  <span data-bind="student_name"></span>
+                  <span class="muted" data-bind="student_programme"></span>
+                </p>
+                <p class="detail-meta" data-bind="bill_line"></p>
+              </div>
+              <div id="detail-status"></div>
+            </div>
+
+            <div class="detail-cols">
+              <section>
+                <h3 class="section-label">Pharmacy bill</h3>
+                <div class="table-wrap">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Medicine</th>
+                        <th class="num">Qty</th>
+                        <th class="num">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody id="bill-items"></tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="2">Total</td>
+                        <td class="num" data-bind="total"></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </section>
+
+              <section>
+                <h3 class="section-label">Prescription on record</h3>
+                <p class="detail-meta" data-bind="rx_meta"></p>
+                <div class="table-wrap">
+                  <table class="table">
+                    <tbody id="rx-items"></tbody>
+                  </table>
+                </div>
+                <p class="rx-notes" data-bind="rx_notes"></p>
+                <button class="btn btn-outline" type="button" id="view-photo" hidden>View prescription photo</button>
+              </section>
+            </div>
+
+            <p class="warn" id="warn-box" hidden></p>
+
+            <div class="decision" id="decision">
+              <label class="field">
+                Reason, if rejecting
+                <input id="reject-reason" type="text" maxlength="200" placeholder="e.g. ORS not prescribed">
+              </label>
+              <div class="chips">
+                <button class="chip" type="button" data-reason="Medicine not prescribed">Medicine not
+                  prescribed</button>
+                <button class="chip" type="button" data-reason="Quantity more than prescribed">Quantity more than
+                  prescribed</button>
+                <button class="chip" type="button" data-reason="Wrong roll number">Wrong roll number</button>
+              </div>
+              <div class="actions">
+                <button class="btn btn-approve" type="button" id="approve">Approve bill</button>
+                <button class="btn btn-reject" type="button" id="reject" disabled>Reject bill</button>
+              </div>
+            </div>
+
+            <h3 class="section-label">Activity</h3>
+            <ol class="activity" id="activity"></ol>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Other sections: layout only, filled in later -->
+    <section class="panel" data-panel="history" aria-label="History" hidden>
+      <h2 class="section-title">History</h2>
+    </section>
+    <section class="panel" data-panel="prescriptions" aria-label="Prescriptions" hidden>
+      <h2 class="section-title">Prescriptions</h2>
+    </section>
+    <section class="panel" data-panel="search" aria-label="Search student" hidden>
+      <h2 class="section-title">Search student</h2>
+    </section>
   </main>
 
-  <script src="/static/shared/session.js"></script>
-  <script>DS.session();</script>
+  <script src="../shared/config.js"></script>
+  <script src="../shared/dashboard.js"></script>
+  <script src="opd.js"></script>
 </body>
+
 </html>
