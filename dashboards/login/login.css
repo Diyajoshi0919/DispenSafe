@@ -1,8 +1,0 @@
-.login-main { display: flex; justify-content: center; padding: 56px 16px 72px; }
-.login-card { width: 100%; max-width: 420px; }
-.login-card h1 { margin: 0 0 4px; font-family: var(--font-head); font-weight: 700; font-size: 32px; letter-spacing: .02em; text-transform: uppercase; }
-.login-card .lead { margin: 0 0 24px; color: var(--muted); }
-.login-card .btn { width: 100%; margin-top: 6px; }
-.login-help { margin: 20px 0 0; font-size: 14px; color: var(--muted); }
-.show-pw { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink-2); margin: -6px 0 16px; cursor: pointer; }
-.show-pw input { width: 16px; height: 16px; accent-color: var(--blue); }
