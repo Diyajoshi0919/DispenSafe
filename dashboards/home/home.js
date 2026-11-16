@@ -38,7 +38,7 @@
 
   async function load() {
     try {
-      const r = await fetch("/api/home", { cache: "no-store" });
+      const r = await fetch((window.DS_API || "") + "/api/home", { cache: "no-store" });
       if (!r.ok) return;
       const d = await r.json();
 
