@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pharmacy dashboard | Campus Dispensary</title>
+  <link rel="icon" href="/static/shared/img/nitj-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/shared/style.css">
+</head>
+<body>
+  <header class="appbar">
+    <div class="wrap">
+      <a class="appbar-brand" href="/">
+        <img src="/static/shared/img/nitj-logo.png" alt="" width="46" height="49">
+        <span><span class="appbar-title">Campus Dispensary</span><br><span class="appbar-sub">Pharmacy dashboard</span></span>
+      </a>
+      <div class="appbar-right">
+        <span class="appbar-user" data-user-name></span>
+        <button class="btn btn-appbar" type="button" data-logout>Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" style="padding-top: 40px; padding-bottom: 60px">
+    <div class="card">
+      <h1 class="h-section">Pharmacy dashboard</h1>
+      <p>You are logged in. This dashboard is built in the next phase.</p>
+    </div>
+  </main>
+
+  <script src="/static/shared/session.js"></script>
+  <script>DS.session();</script>
+</body>
+</html>
