@@ -1,0 +1,296 @@
+/* Sign-in page. Campus background: the NIT emblem as a faint watermark over a navy gradient. */
+
+:root {
+    --login-navy: #082f52;
+    --login-blue: #0f5e9c;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body.login-page {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--font-body);
+    color: var(--ink);
+    background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(15, 94, 156, .55), transparent 60%),
+        radial-gradient(900px 500px at -10% 110%, rgba(10, 68, 115, .9), transparent 60%),
+        linear-gradient(160deg, #061f38 0%, var(--login-navy) 45%, #0b3f6c 100%);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Emblem watermark, turned white and faded so it sits behind the card. */
+body.login-page::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url("../dashboards/shared/img/nitj-logo.png") center / min(72vmin, 640px) no-repeat;
+    filter: brightness(0) invert(1);
+    opacity: .06;
+    pointer-events: none;
+}
+
+/* Thin repeating grid for texture. */
+body.login-page::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+}
+
+.login-wrap {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 32px 16px;
+}
+
+.login-card {
+    width: min(440px, 100%);
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 30px 80px rgba(3, 18, 34, .45);
+    overflow: hidden;
+}
+
+.login-head {
+    text-align: center;
+    padding: 30px 28px 22px;
+    background: linear-gradient(180deg, #f7fafd 0%, #fff 100%);
+    border-bottom: 1px solid var(--line);
+}
+
+.login-head img {
+    width: 76px;
+    height: 76px;
+}
+
+.login-institute {
+    margin: 12px 0 6px;
+    font-size: 12px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.login-title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    color: var(--navy);
+}
+
+.login-subtitle {
+    margin: 4px 0 0;
+    font-size: 15px;
+    color: var(--ink-2);
+}
+
+.login-notice,
+.login-error {
+    margin: 18px 28px 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.login-notice {
+    background: var(--blue-light);
+    color: var(--navy-2);
+}
+
+.login-error {
+    background: var(--bad-bg);
+    color: var(--bad);
+}
+
+.login-form {
+    padding: 22px 28px 10px;
+    display: grid;
+    gap: 18px;
+}
+
+.role-choice {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.role-choice legend {
+    font-size: 14px;
+    color: var(--ink-2);
+    padding: 0;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.role-option {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 10px;
+    row-gap: 2px;
+    align-items: center;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    background: #fff;
+}
+
+.role-option input {
+    grid-row: span 2;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--blue);
+}
+
+.role-option span {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.role-option small {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.role-option:has(input:checked) {
+    border-color: var(--blue);
+    background: #f2f8fd;
+}
+
+.role-option:focus-within {
+    outline: 3px solid var(--blue);
+    outline-offset: 2px;
+}
+
+.field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-2);
+    margin-bottom: 6px;
+}
+
+.field input {
+    width: 100%;
+    padding: 12px 13px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    font: inherit;
+    font-size: 16px;
+    color: var(--ink);
+    background: #fff;
+}
+
+.field input:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(15, 94, 156, .18);
+}
+
+.field input[aria-invalid="true"] {
+    border-color: var(--bad);
+}
+
+.field-hint {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.password-row {
+    position: relative;
+}
+
+.password-row input {
+    padding-right: 76px;
+}
+
+.show-key {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: 0;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--blue);
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 6px;
+}
+
+.show-key:hover {
+    background: var(--blue-light);
+}
+
+.login-submit {
+    width: 100%;
+    min-height: 50px;
+    font-size: 17px;
+    margin-top: 4px;
+}
+
+.login-submit[disabled] {
+    opacity: .6;
+    cursor: progress;
+}
+
+.login-foot {
+    padding: 16px 28px 22px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.btn-primary {
+    background: var(--blue);
+    color: #fff;
+    border: 0;
+}
+
+.btn-primary:hover {
+    background: var(--navy-2);
+}
+
+@media (max-width: 480px) {
+    .login-head {
+        padding: 24px 20px 18px;
+    }
+
+    .login-title {
+        font-size: 26px;
+    }
+
+    .login-form {
+        padding: 18px 20px 8px;
+    }
+
+    .login-notice,
+    .login-error {
+        margin: 16px 20px 0;
+    }
+
+    .login-foot {
+        padding: 14px 20px 20px;
+    }
+}

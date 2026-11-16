@@ -1,37 +1,175 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pharmacy dashboard | Campus Dispensary</title>
-  <link rel="icon" href="/static/shared/img/nitj-logo.png">
+  <link rel="icon" href="../shared/img/nitj-logo.png">
+
+  <!-- If the dispensary network has no internet, the fallback fonts in style.css are used. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/shared/style.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="../shared/style.css">
+  <link rel="stylesheet" href="../shared/dashboard.css">
 </head>
-<body>
-  <header class="appbar">
-    <div class="wrap">
-      <a class="appbar-brand" href="/">
-        <img src="/static/shared/img/nitj-logo.png" alt="" width="46" height="49">
-        <span><span class="appbar-title">Campus Dispensary</span><br><span class="appbar-sub">Pharmacy dashboard</span></span>
-      </a>
-      <div class="appbar-right">
-        <span class="appbar-user" data-user-name></span>
-        <button class="btn btn-appbar" type="button" data-logout>Log out</button>
+
+<body class="dash" data-role="pharmacy">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="app-header">
+    <div class="brand">
+      <img src="../shared/img/nitj-logo.png" alt="" width="46" height="46">
+      <div>
+        <div class="brand-title">Campus Dispensary</div>
+        <div class="brand-sub">Pharmacy dashboard</div>
       </div>
+    </div>
+    <div class="header-right">
+      <span class="live" data-bind="live-status" data-state="off">Connecting</span>
+      <span class="staff-name" data-bind="staff-name"></span>
+      <button class="btn-ghost-light" type="button" data-action="logout">Log out</button>
     </div>
   </header>
 
-  <main class="wrap" style="padding-top: 40px; padding-bottom: 60px">
-    <div class="card">
-      <h1 class="h-section">Pharmacy dashboard</h1>
-      <p>You are logged in. This dashboard is built in the next phase.</p>
-    </div>
+  <nav class="tabs" role="tablist" aria-label="Pharmacy sections">
+    <button class="tab" role="tab" type="button" data-tab="today" aria-selected="true">Today's bills</button>
+    <button class="tab" role="tab" type="button" data-tab="stock" aria-selected="false">Medicine stock</button>
+    <button class="tab" role="tab" type="button" data-tab="eod" aria-selected="false">End-of-day summary</button>
+  </nav>
+
+  <main id="main" class="dash-main">
+    <div class="banner-error" data-bind="error" role="alert" hidden></div>
+
+    <!-- Today's bills (live) -->
+    <section class="panel" data-panel="today" aria-label="Today's bills">
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Waiting for OPD</div>
+          <div class="stat-value" data-tone="wait" data-bind="stat-waiting-opd"></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Waiting for student</div>
+          <div class="stat-value" data-tone="blue" data-bind="stat-waiting-student"></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Ready to hand over</div>
+          <div class="stat-value" data-tone="ok" data-bind="stat-ready"></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Handed over today</div>
+          <div class="stat-value" data-tone="grey" data-bind="stat-handed"></div>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <aside>
+          <div class="list-head">
+            <h2 class="section-title">Today's bills</h2>
+            <span class="muted">Newest first</span>
+          </div>
+          <ul class="bill-list" id="bill-list"></ul>
+        </aside>
+
+        <article class="detail" aria-live="polite">
+          <p class="empty" id="detail-empty">Select a bill to see its status.</p>
+
+          <div id="detail-body" hidden>
+            <div class="detail-head">
+              <div>
+                <h2 class="detail-roll" data-bind="roll_no"></h2>
+                <p class="detail-name" data-bind="student_name"></p>
+                <p class="detail-meta" data-bind="bill_line"></p>
+              </div>
+              <div id="detail-status"></div>
+            </div>
+
+            <div class="detail-cols">
+              <section>
+                <!-- Pending: waiting for OPD -->
+                <div data-show="pending">
+                  <h3 class="section-label">Waiting for OPD</h3>
+                  <p class="muted">OPD is reviewing this bill. Nothing to do yet.</p>
+                </div>
+
+                <!-- Approved: QR for the student -->
+                <div data-show="approved" hidden>
+                  <h3 class="section-label">Approved by OPD</h3>
+                  <p class="muted">Ask the student to scan this code and confirm the bill on their phone.</p>
+                  <div class="qr-box">
+                    <img id="qr-img" alt="" hidden>
+                  </div>
+                  <p class="qr-caption" data-bind="qr_caption"></p>
+                  <div class="actions">
+                    <button class="btn btn-outline" type="button" id="new-qr">Generate new QR</button>
+                  </div>
+                </div>
+
+                <!-- Rejected -->
+                <div data-show="rejected" hidden>
+                  <h3 class="section-label">Rejected by OPD</h3>
+                  <p class="warn" data-bind="reject_reason"></p>
+                </div>
+
+                <!-- Confirmed by student: ready to hand over -->
+                <div data-show="confirmed" hidden>
+                  <h3 class="section-label">Student confirmed</h3>
+                  <p class="muted">Hand the medicines over and mark the bill as handed over.</p>
+                  <div class="actions">
+                    <button class="btn btn-approve" type="button" id="handover">Hand over bill</button>
+                  </div>
+                </div>
+
+                <!-- Handed over -->
+                <div data-show="handed_over" hidden>
+                  <h3 class="section-label">Handed over</h3>
+                  <p class="muted" data-bind="handed_at"></p>
+                </div>
+              </section>
+
+              <section>
+                <h3 class="section-label">Bill</h3>
+                <div class="table-wrap">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Medicine</th>
+                        <th class="num">Qty</th>
+                        <th class="num">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody id="bill-items"></tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="2">Total</td>
+                        <td class="num" data-bind="total"></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </section>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Other sections: layout only, filled in later -->
+    <section class="panel" data-panel="stock" aria-label="Medicine stock" hidden>
+      <h2 class="section-title">Medicine stock</h2>
+    </section>
+    <section class="panel" data-panel="eod" aria-label="End-of-day summary" hidden>
+      <h2 class="section-title">End-of-day summary</h2>
+    </section>
   </main>
 
-  <script src="/static/shared/session.js"></script>
-  <script>DS.session();</script>
+  <script src="../shared/config.js"></script>
+  <script src="../shared/dashboard.js"></script>
+  <script src="pharmacy.js"></script>
 </body>
+
 </html>

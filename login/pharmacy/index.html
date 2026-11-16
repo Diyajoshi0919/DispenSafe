@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pharmacy dashboard sign-in | Campus Dispensary</title>
+    <link rel="icon" href="../../dashboards/shared/img/nitj-logo.png">
+
+    <!-- If the dispensary network has no internet, the fallback fonts in style.css are used. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../../dashboards/shared/style.css">
+    <link rel="stylesheet" href="../login.css">
+</head>
+
+<body class="login-page" data-role="pharmacy" data-dashboard="../../dashboards/pharmacy/index.html">
+    <main class="login-wrap">
+        <section class="login-card" aria-labelledby="login-title">
+            <header class="login-head">
+                <img src="../../dashboards/shared/img/nitj-logo.png" alt="" width="76" height="76">
+                <p class="login-institute">Dr B R Ambedkar National Institute of Technology Jalandhar</p>
+                <h1 id="login-title" class="login-title">Campus Dispensary</h1>
+                <p class="login-subtitle">Pharmacy dashboard · Staff sign-in</p>
+            </header>
+
+            <div class="login-notice" id="notice" role="status" hidden></div>
+            <div class="login-error" id="error" role="alert" hidden></div>
+
+            <form id="login-form" class="login-form" novalidate>
+                <div class="field">
+                    <label for="staff-name">Your name</label>
+                    <input id="staff-name" name="staff_name" type="text" autocomplete="name" maxlength="80" required>
+                    <p class="field-hint">Shown in the activity log next to each decision.</p>
+                </div>
+
+                <div class="field">
+                    <label for="staff-key">Staff key</label>
+                    <div class="password-row">
+                        <input id="staff-key" name="staff_key" type="password" autocomplete="off" required>
+                        <button type="button" class="show-key" id="toggle-key" aria-controls="staff-key"
+                            aria-pressed="false">Show</button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary login-submit" type="submit" id="submit">Sign in</button>
+            </form>
+
+            <footer class="login-foot">
+                <p>Staff access only. Every decision is recorded with your name.</p>
+                <p><a href="../opd/">OPD staff? Sign in here</a></p>
+                <p><a href="../../dashboards/home/index.html">Back to the dispensary home</a></p>
+            </footer>
+        </section>
+    </main>
+
+    <script src="../../dashboards/shared/config.js"></script>
+    <script src="../login.js"></script>
+</body>
+
+</html>
